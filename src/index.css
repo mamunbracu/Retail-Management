@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-primary: #FF6347; /* Tomato */
+  --color-primary-hover: #E5533D;
+  
+  --color-dark-bg: #0B0F19;
+  --color-dark-card: #151A2D;
+  --color-dark-border: #1E293B;
+  
+  --color-light-bg: #F5F5DC; /* Beige */
+  --color-light-card: #FFFFFF;
+  --color-light-border: #E2E8F0;
+
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+  
+  --shadow-primary: 0 10px 15px -3px rgba(255, 99, 71, 0.1), 0 4px 6px -4px rgba(255, 99, 71, 0.1);
+}
+
+@utility glass-card {
+  @apply bg-white dark:bg-[#151A2D] border-none dark:border dark:border-[#1E293B] shadow-[0_20px_50px_rgba(0,0,0,0.05)] dark:shadow-none rounded-3xl transition-all duration-300;
+}
+
+@utility glass {
+  @apply bg-white dark:bg-[#151A2D] border border-slate-200 dark:border-[#1E293B];
+}
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer base {
+  body {
+    @apply antialiased bg-[#F5F5DC] dark:bg-[#0B0F19] text-slate-900 dark:text-slate-50;
+  }
+  
+  /* Ensure form elements have good contrast in dark mode */
+  input, select, textarea {
+    @apply dark:text-white dark:bg-[#151A2D] dark:border-[#1E293B];
+  }
+  
+  /* Make everything clickable a pointer */
+  button, 
+  [role="button"], 
+  a, 
+  select, 
+  label,
+  summary,
+  input[type="checkbox"], 
+  input[type="radio"], 
+  input[type="submit"],
+  input[type="file"]::-webkit-file-upload-button,
+  .cursor-pointer,
+  [class*="hover:bg-"],
+  [class*="hover:text-"],
+  [class*="hover:border-"],
+  [class*="hover:shadow-"] {
+    cursor: pointer !important;
+  }
+  
+  /* Custom scrollbar for dark mode */
+  .dark ::-webkit-scrollbar {
+    width: 10px;
+  }
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-[#0B0F19];
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-[#1E293B] rounded-full border-2 border-[#0B0F19];
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-600;
+  }
+}
+
+/* Custom Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
