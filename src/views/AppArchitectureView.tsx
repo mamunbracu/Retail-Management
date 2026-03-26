@@ -3,9 +3,9 @@ import { motion } from 'motion/react';
 import { User, Shield, Lock, Unlock } from 'lucide-react';
 
 const roles = {
-  Admin: { color: 'bg-purple-500', tables: ['Employees', 'Timesheets', 'Finance', 'Orders', 'Resources', 'Salary', 'Shifts', 'Transactions', 'Documents', 'Notifications', 'AdminUsers'] },
-  'Senior Staff': { color: 'bg-cyan-500', tables: ['Employees', 'Timesheets', 'Finance', 'Orders', 'Resources', 'Shifts', 'Transactions', 'Documents', 'Notifications'] },
-  Staff: { color: 'bg-amber-500', tables: ['Employees', 'Timesheets', 'Resources', 'Shifts', 'Notifications'] },
+  Admin: { color: 'bg-purple-500', tables: ['Employees', 'Timesheets', 'Finance', 'Orders', 'Resources', 'Salary', 'Shifts', 'Transactions', 'Documents', 'Notifications', 'AdminUsers', 'Products', 'Categories', 'SiteAssets', 'CartItems', 'Wishlists'] },
+  'Senior Staff': { color: 'bg-cyan-500', tables: ['Employees', 'Timesheets', 'Finance', 'Orders', 'Resources', 'Shifts', 'Transactions', 'Documents', 'Notifications', 'Products', 'Categories'] },
+  Staff: { color: 'bg-amber-500', tables: ['Employees', 'Timesheets', 'Resources', 'Shifts', 'Notifications', 'Products'] },
 };
 
 const allTables = roles.Admin.tables;

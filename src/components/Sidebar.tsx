@@ -41,7 +41,7 @@ export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOp
     return Icon;
   };
 
-  const navItems = appSettings ? 
+  const baseNavItems = appSettings ? 
     appSettings.sidebarItems
       .filter(item => item.isVisible && (isAdmin || item.view !== 'Admin Hub'))
       .sort((a, b) => a.order - b.order)
@@ -63,6 +63,16 @@ export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOp
       { icon: LucideIcons.FileText, label: 'My Timesheet', value: 'Staff Timesheet' },
     ].filter(item => isAdmin || (item.value !== 'Admin Hub')).sort((a, b) => a.label.localeCompare(b.label))
   ];
+
+  // Always ensure 'Control Store' is available for admins
+  const navItems = [...baseNavItems];
+  if (isAdmin && !navItems.some(item => item.value === 'Control Store')) {
+    navItems.push({
+      icon: LucideIcons.Store,
+      label: 'Control Store',
+      value: 'Control Store'
+    });
+  }
 
   const bottomItems = [
     { icon: LucideIcons.User, label: 'Profile', value: 'Profile' },
@@ -94,6 +104,13 @@ export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOp
               onClick={() => { setActiveView(item.value as ViewType); onItemClick?.(); }} 
             />
           ))}
+          <a
+            href="/"
+            className="flex items-center gap-3 px-4 py-3 w-full text-left transition-all duration-200 rounded-lg text-slate-400 hover:bg-primary/10 hover:text-primary"
+          >
+            <LucideIcons.Store size={20} />
+            <span className="font-medium">Go to Store</span>
+          </a>
         </div>
       </nav>
       {user && (
@@ -124,17 +141,14 @@ export const Sidebar = ({ activeView, setActiveView, isMobileOpen, setIsMobileOp
   return (
     <>
       {/* Desktop Sidebar */}
-      <aside className={cn(
-        "hidden lg:flex flex-col w-64 p-6 sticky top-0 transition-all duration-300 glass border-r border-slate-200 dark:border-[#1E293B]",
-        !isDarkMode && "bg-white/70"
-      )}>
+      <aside className="hidden lg:flex flex-col w-64 p-6 sticky top-0 transition-all duration-300 glass border-r border-[#1E293B] bg-[#0B0F19]">
         <div className="flex items-center gap-3 mb-10 px-2 shrink-0">
           <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center shadow-lg shadow-primary/40">
             <SiteIcon size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight text-slate-900 dark:text-white uppercase">{siteTitle}</h1>
-            {siteSubtitle && <p className="text-[10px] text-slate-500 dark:text-slate-400 uppercase tracking-widest font-bold">{siteSubtitle}</p>}
+            <h1 className="font-bold text-lg leading-tight text-white uppercase">{siteTitle}</h1>
+            {siteSubtitle && <p className="text-[10px] text-slate-400 uppercase tracking-widest font-bold">{siteSubtitle}</p>}
           </div>
         </div>
         {renderNav()}

@@ -63,6 +63,94 @@ export const login = async (req: any, res: any) => {
   }
 };
 
+export const signup = async (req: any, res: any) => {
+  const { name, email, password } = req.body;
+  
+  if (!email || !password || !name) {
+    return res.status(400).json({ error: "Name, email and password are required" });
+  }
+
+  // Check if user already exists
+  const { data: existingUser, error: checkError } = await supabase
+    .from("employees")
+    .select("id")
+    .eq("email", email)
+    .single();
+
+  if (existingUser) {
+    return res.status(400).json({ error: "User with this email already exists" });
+  }
+
+  const newUser = {
+    id: crypto.randomUUID(),
+    name,
+    email,
+    password,
+    role: 'Customer',
+    joined_date: new Date().toISOString().split('T')[0]
+  };
+
+  const { data, error } = await supabase.from("employees").insert([newUser]).select();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json({
+    id: data[0].id,
+    name: data[0].name,
+    role: data[0].role,
+    email: data[0].email
+  });
+};
+
+export const socialLogin = async (req: any, res: any) => {
+  const { provider, email, name, id: socialId } = req.body;
+
+  if (!email || !provider) {
+    return res.status(400).json({ error: "Email and provider are required" });
+  }
+
+  // Check if user exists
+  const { data: existingUser, error: checkError } = await supabase
+    .from("employees")
+    .select("*")
+    .eq("email", email)
+    .single();
+
+  if (existingUser) {
+    return res.json({
+      id: existingUser.id,
+      name: existingUser.name,
+      role: existingUser.role,
+      email: existingUser.email
+    });
+  }
+
+  // Create new user if doesn't exist
+  const newUser = {
+    id: crypto.randomUUID(),
+    name: name || email.split('@')[0],
+    email,
+    role: 'Customer',
+    joined_date: new Date().toISOString().split('T')[0],
+    password: 'social-login-' + Math.random().toString(36).slice(-8)
+  };
+
+  const { data, error } = await supabase.from("employees").insert([newUser]).select();
+
+  if (error) {
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json({
+    id: data[0].id,
+    name: data[0].name,
+    role: data[0].role,
+    email: data[0].email
+  });
+};
+
 export const resetPassword = async (req: any, res: any) => {
   const { email, previousPassword, newPassword } = req.body;
   

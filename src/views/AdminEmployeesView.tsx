@@ -233,6 +233,7 @@ export const AdminEmployeesView = ({ setActiveView }: AdminEmployeesViewProps) =
     { title: 'Admin Users', icon: Shield, view: 'AdminUsers', color: 'bg-purple-500' },
     { title: 'App Settings', icon: Settings, view: 'App Settings', color: 'bg-blue-600' },
     { title: 'App Structure', icon: LayoutGrid, view: 'AppArchitectureView', color: 'bg-indigo-500' },
+    { title: 'Control Store', icon: Shield, view: 'Control Store', color: 'bg-emerald-600' },
   ];
 
   if (showAppArchitecture) {

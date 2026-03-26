@@ -193,3 +193,58 @@ export interface AppNotification {
   timestamp: string;
   isRead: number;
 }
+
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  image_url?: string;
+  created_at?: string;
+}
+
+export interface Product {
+  id: string;
+  category_id: string;
+  name: string;
+  slug: string;
+  description?: string;
+  price: number;
+  sale_price?: number;
+  stock_quantity: number;
+  image_url?: string;
+  images?: string; // JSON string of array
+  attributes?: string; // JSON string of object
+  is_featured?: boolean;
+  is_active?: boolean;
+  created_at?: string;
+  categories?: { name: string };
+}
+
+export interface SiteAsset {
+  id: string;
+  type: 'hero' | 'banner' | 'promo' | 'logo' | 'other';
+  title?: string;
+  subtitle?: string;
+  image_url?: string;
+  link_url?: string;
+  is_active?: boolean;
+  order_index?: number;
+  created_at?: string;
+}
+
+export interface EcommerceSettings {
+  id: string;
+  shop_name: string;
+  footer_about: string;
+  contact_email: string;
+  contact_phone: string;
+  contact_address: string;
+  social_links: {
+    facebook?: string;
+    instagram?: string;
+    twitter?: string;
+    tiktok?: string;
+  };
+  updated_at?: string;
+}

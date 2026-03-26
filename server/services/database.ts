@@ -15,10 +15,13 @@ export async function seedDatabase(force = false) {
   console.log(`[SEED] Checking if database needs seeding (force=${force})...`);
   try {
     // Check if tables exist first
-    const { error: tableError } = await supabase.from("employees").select("count", { count: 'exact', head: true });
-    if (tableError && tableError.message.includes("Could not find the table")) {
-      console.error("[SEED] CRITICAL: Database tables are missing. Please run the SQL schema in your Supabase SQL Editor.");
-      return;
+    const tablesToCheck = ["employees", "categories", "products", "site_assets", "orders", "order_items", "wishlists", "user_themes", "cart_items"];
+    for (const table of tablesToCheck) {
+      const { error: tableError } = await supabase.from(table).select("count", { count: 'exact', head: true });
+      if (tableError && tableError.message.includes("Could not find the table")) {
+        console.error(`[SEED] CRITICAL: Table "${table}" is missing. Please run the SQL schema in your Supabase SQL Editor.`);
+        return;
+      }
     }
 
     // Check employees
@@ -249,7 +252,8 @@ export async function seedDatabase(force = false) {
         { id: '6', label: 'Resources', view: 'Resources', icon: 'BookOpen', order: 5, isVisible: true },
         { id: '7', label: 'Instructions', view: 'Instruction', icon: 'Info', order: 6, isVisible: true },
         { id: '8', label: 'Documents', view: 'Documents', icon: 'FileText', order: 7, isVisible: true },
-        { id: '9', label: 'Admin Hub', view: 'Admin Hub', icon: 'ShieldCheck', order: 8, isVisible: true }
+        { id: '9', label: 'Control Store', view: 'Control Store', icon: 'Store', order: 8, isVisible: true },
+        { id: '10', label: 'Admin Hub', view: 'Admin Hub', icon: 'ShieldCheck', order: 9, isVisible: true }
       ];
       const initialDashboardCards = [
         { id: '1', title: 'Quick Actions', icon: 'Zap', content: 'Access common tasks quickly.', type: 'static', color: 'bg-indigo-500', order: 0, isVisible: true },
@@ -266,6 +270,68 @@ export async function seedDatabase(force = false) {
         }
       ]);
     }
+
+    // --- E-commerce Seeding ---
+    console.log("[SEED] Seeding E-commerce tables...");
+
+    // Categories
+    const initialCategories = [
+      { id: 'cat-1', name: 'Electronics', slug: 'electronics', thumbnail: 'https://picsum.photos/seed/electronics/400/400' },
+      { id: 'cat-2', name: 'Fashion', slug: 'fashion', thumbnail: 'https://picsum.photos/seed/fashion/400/400' },
+      { id: 'cat-3', name: 'Home & Living', slug: 'home-living', thumbnail: 'https://picsum.photos/seed/home/400/400' },
+      { id: 'cat-4', name: 'Books', slug: 'books', thumbnail: 'https://picsum.photos/seed/books/400/400' }
+    ];
+    await supabase.from("categories").upsert(initialCategories);
+
+    // Products
+    const initialProducts = [
+      { id: 'prod-1', name: 'Wireless Headphones', price: 99.99, description: 'High-quality wireless headphones with noise cancellation.', details: 'Battery life: 20 hours, Bluetooth 5.0, Noise cancellation.', stock: 50, category_id: 'cat-1', images: JSON.stringify(['https://picsum.photos/seed/headphones/600/600']), colors: JSON.stringify(['Black', 'White', 'Blue']) },
+      { id: 'prod-2', name: 'Smart Watch', price: 199.99, description: 'Track your fitness and stay connected.', details: 'Heart rate monitor, GPS, Water resistant.', stock: 30, category_id: 'cat-1', images: JSON.stringify(['https://picsum.photos/seed/watch/600/600']), colors: JSON.stringify(['Black', 'Silver']) },
+      { id: 'prod-3', name: 'Cotton T-Shirt', price: 19.99, description: 'Comfortable 100% cotton t-shirt.', details: 'Machine washable, Breathable fabric.', stock: 100, category_id: 'cat-2', images: JSON.stringify(['https://picsum.photos/seed/tshirt/600/600']), colors: JSON.stringify(['Red', 'Blue', 'Green', 'White']) },
+      { id: 'prod-4', name: 'Coffee Maker', price: 49.99, description: 'Brew the perfect cup of coffee every morning.', details: 'Programmable timer, 12-cup capacity.', stock: 20, category_id: 'cat-3', images: JSON.stringify(['https://picsum.photos/seed/coffee/600/600']), colors: JSON.stringify(['Black', 'Red']) }
+    ];
+    await supabase.from("products").upsert(initialProducts);
+
+    // Site Assets (Banners, Ads, Footer)
+    const initialAssets = [
+      { id: 'asset-1', type: 'banner', content: JSON.stringify({ title: 'Summer Sale!', subtitle: 'Up to 50% off on all items.', image: 'https://picsum.photos/seed/summer/1200/400', link: '/category/fashion' }) },
+      { id: 'asset-2', type: 'banner', content: JSON.stringify({ title: 'New Arrivals', subtitle: 'Check out the latest tech gadgets.', image: 'https://picsum.photos/seed/tech/1200/400', link: '/category/electronics' }) },
+      { id: 'asset-3', type: 'ad', content: JSON.stringify({ title: 'Free Shipping', subtitle: 'On orders over $50.', image: 'https://picsum.photos/seed/shipping/600/200', link: '#' }) },
+      { id: 'asset-4', type: 'footer', content: JSON.stringify({ 
+        about: 'Your one-stop shop for everything.',
+        links: [
+          { label: 'Home', url: '/' },
+          { label: 'Shop', url: '/shop' },
+          { label: 'Contact', url: '/contact' }
+        ],
+        social: [
+          { platform: 'Facebook', url: '#' },
+          { platform: 'Instagram', url: '#' },
+          { platform: 'Twitter', url: '#' }
+        ]
+      }) }
+    ];
+    await supabase.from("site_assets").upsert(initialAssets);
+
+    // Orders & Order Items (Initial empty seeding or sample)
+    const { count: orderCountCheck } = await supabase.from("orders").select("count", { count: 'exact', head: true });
+    if (orderCountCheck === 0) {
+      console.log("[SEED] Seeding sample orders...");
+      // Sample order seeding if needed
+    }
+
+    // Wishlists (Initial empty seeding)
+    const { count: wishlistCountCheck } = await supabase.from("wishlists").select("count", { count: 'exact', head: true });
+    if (wishlistCountCheck === 0) {
+      console.log("[SEED] Wishlists table ready.");
+    }
+
+    // User Themes (Initial empty seeding)
+    const { count: themeCountCheck } = await supabase.from("user_themes").select("count", { count: 'exact', head: true });
+    if (themeCountCheck === 0) {
+      console.log("[SEED] User Themes table ready.");
+    }
+
   } catch (err) {
     console.error("Unexpected error during seeding:", err);
   }

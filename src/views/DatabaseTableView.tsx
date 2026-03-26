@@ -13,7 +13,16 @@ const TABLES = [
   'resources',
   'instructions',
   'shift_tasks',
-  'salaries'
+  'salaries',
+  'categories',
+  'products',
+  'site_assets',
+  'orders',
+  'order_items',
+  'wishlists',
+  'cart_items',
+  'user_themes',
+  'ecommerce_settings'
 ];
 
 export const DatabaseTableView: FC = () => {

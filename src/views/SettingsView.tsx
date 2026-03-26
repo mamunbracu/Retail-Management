@@ -365,6 +365,99 @@ CREATE TABLE IF NOT EXISTS app_settings (
   updated_at TEXT
 );
 
+CREATE TABLE IF NOT EXISTS categories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  image_url TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id TEXT PRIMARY KEY,
+  category_id TEXT REFERENCES categories(id) ON DELETE SET NULL,
+  name TEXT NOT NULL,
+  slug TEXT UNIQUE NOT NULL,
+  description TEXT,
+  price DECIMAL(10, 2) NOT NULL,
+  compare_at_price DECIMAL(10, 2),
+  stock_quantity INTEGER DEFAULT 0,
+  image_url TEXT,
+  images TEXT[],
+  is_featured BOOLEAN DEFAULT FALSE,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS site_assets (
+  id TEXT PRIMARY KEY,
+  type TEXT NOT NULL,
+  title TEXT,
+  subtitle TEXT,
+  content TEXT,
+  image_url TEXT,
+  link_url TEXT,
+  is_active BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES employees(id) ON DELETE SET NULL,
+  status TEXT DEFAULT 'pending',
+  total_amount DECIMAL(10, 2) NOT NULL,
+  shipping_address TEXT,
+  billing_address TEXT,
+  payment_method TEXT,
+  payment_status TEXT DEFAULT 'pending',
+  tracking_number TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id TEXT PRIMARY KEY,
+  order_id TEXT REFERENCES orders(id) ON DELETE CASCADE,
+  product_id TEXT REFERENCES products(id) ON DELETE SET NULL,
+  quantity INTEGER NOT NULL,
+  price_at_purchase DECIMAL(10, 2) NOT NULL,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS wishlists (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES employees(id) ON DELETE CASCADE,
+  product_id TEXT REFERENCES products(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+  UNIQUE(user_id, product_id)
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES employees(id) ON DELETE CASCADE,
+  product_id TEXT REFERENCES products(id) ON DELETE CASCADE,
+  quantity INTEGER NOT NULL DEFAULT 1,
+  color TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()),
+  UNIQUE(user_id, product_id, color)
+);
+
+CREATE TABLE IF NOT EXISTS user_themes (
+  user_id TEXT PRIMARY KEY REFERENCES employees(id) ON DELETE CASCADE,
+  theme TEXT NOT NULL DEFAULT 'classic',
+  is_dark BOOLEAN NOT NULL DEFAULT false,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
+CREATE TABLE IF NOT EXISTS ecommerce_settings (
+  id TEXT PRIMARY KEY,
+  store_name TEXT NOT NULL,
+  currency TEXT DEFAULT 'USD',
+  shipping_fee DECIMAL(10, 2) DEFAULT 0,
+  tax_rate DECIMAL(5, 2) DEFAULT 0,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW())
+);
+
 -- Fix for item_name not-null constraint if it exists
 DO $$ 
 BEGIN 

@@ -68,11 +68,158 @@ export const api = {
       body: JSON.stringify({ adminId, password }),
     });
   },
+  signup: async (userData: any): Promise<any> => {
+    return fetchJson('/api/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(userData),
+    });
+  },
+  socialLogin: async (socialData: any): Promise<any> => {
+    return fetchJson('/api/social-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(socialData),
+    });
+  },
   resetPassword: async (email: string, previousPassword?: string, newPassword?: string):Promise<any> => {
     return fetchJson('/api/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, previousPassword, newPassword }),
+    });
+  },
+  // Wishlist
+  getWishlist: async (userId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/wishlist/${userId}`);
+  },
+  getAllWishlists: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/wishlist/all');
+  },
+  addToWishlist: async (userId: string, productId: string): Promise<any> => {
+    return fetchJson('/api/ecommerce/wishlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, productId }),
+    });
+  },
+  removeFromWishlist: async (userId: string, productId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/wishlist/${userId}/${productId}`, {
+      method: 'DELETE',
+    });
+  },
+  // Cart
+  getCart: async (userId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/cart/${userId}`);
+  },
+  getAllCartItems: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/cart/all');
+  },
+  addToCart: async (userId: string, productId: string, quantity: number, color?: string): Promise<any> => {
+    return fetchJson('/api/ecommerce/cart', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, productId, quantity, color }),
+    });
+  },
+  updateCartItem: async (userId: string, productId: string, quantity: number): Promise<any> => {
+    return fetchJson('/api/ecommerce/cart', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, productId, quantity }),
+    });
+  },
+  removeFromCart: async (userId: string, productId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/cart/${userId}/${productId}`, {
+      method: 'DELETE',
+    });
+  },
+  // Theme
+  getUserTheme: async (userId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/theme/${userId}`);
+  },
+  updateUserTheme: async (userId: string, theme: string, isDark: boolean): Promise<any> => {
+    return fetchJson('/api/ecommerce/theme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, theme, isDark }),
+    });
+  },
+  // Categories
+  getCategories: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/categories');
+  },
+  createCategory: async (category: any): Promise<any> => {
+    return fetchJson('/api/ecommerce/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(category),
+    });
+  },
+  updateCategory: async (id: string, category: any): Promise<any> => {
+    return fetchJson(`/api/ecommerce/categories/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(category),
+    });
+  },
+  deleteCategory: async (id: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/categories/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  // Products
+  getProducts: async (categoryId?: string, search?: string): Promise<any> => {
+    let url = '/api/ecommerce/products';
+    const params = new URLSearchParams();
+    if (categoryId) params.append('categoryId', categoryId);
+    if (search) params.append('search', search);
+    if (params.toString()) url += `?${params.toString()}`;
+    return fetchJson(url);
+  },
+  getProductById: async (id: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/products/${id}`);
+  },
+  createProduct: async (product: any): Promise<any> => {
+    return fetchJson('/api/ecommerce/products', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product),
+    });
+  },
+  updateProduct: async (id: string, product: any): Promise<any> => {
+    return fetchJson(`/api/ecommerce/products/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(product),
+    });
+  },
+  deleteProduct: async (id: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/products/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  // Site Assets
+  getSiteAssets: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/site-assets');
+  },
+  createSiteAsset: async (asset: any): Promise<any> => {
+    return fetchJson('/api/ecommerce/site-assets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(asset),
+    });
+  },
+  updateSiteAsset: async (id: string, asset: any): Promise<any> => {
+    return fetchJson(`/api/ecommerce/site-assets/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(asset),
+    });
+  },
+  deleteSiteAsset: async (id: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/site-assets/${id}`, {
+      method: 'DELETE',
     });
   },
   // Employees
@@ -182,7 +329,22 @@ export const api = {
     await fetchJson(`/api/resources/${id}`, { method: 'DELETE' });
   },
 
-  // Order List
+  // Orders
+  getAllOrders: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/orders');
+  },
+  createOrder: async (orderData: any): Promise<any> => {
+    return fetchJson('/api/ecommerce/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData),
+    });
+  },
+  getOrdersByUserId: async (userId: string): Promise<any> => {
+    return fetchJson(`/api/ecommerce/orders/user/${userId}`);
+  },
+
+  // Legacy Order List (for other views)
   getOrderList: async (): Promise<OrderRecord[]> => {
     return fetchJson('/api/order-list');
   },
@@ -249,6 +411,18 @@ export const api = {
   },
   saveAppSettings: async (settings: AppSettings): Promise<AppSettings> => {
     return fetchJson('/api/app-settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    });
+  },
+
+  // Ecommerce Settings
+  getEcommerceSettings: async (): Promise<any> => {
+    return fetchJson('/api/ecommerce/settings');
+  },
+  updateEcommerceSettings: async (settings: any): Promise<any> => {
+    return fetchJson('/api/ecommerce/settings', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),

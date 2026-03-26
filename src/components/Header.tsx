@@ -69,15 +69,15 @@ export const Header = ({ isDarkMode, setIsDarkMode, setIsMobileOpen, notificatio
       </AnimatePresence>
 
       {/* Floating Header */}
-      <div className="flex items-center justify-between p-4 lg:p-6 bg-white dark:bg-[#0B0F19] border-b border-slate-200 dark:border-[#1E293B] sticky top-0 z-40">
+      <div className="flex items-center justify-between p-4 lg:p-6 bg-[#0B0F19] border-b border-[#1E293B] sticky top-0 z-40">
         <div className="flex-1 flex items-center gap-4 min-w-0">
-          <button onClick={() => setIsMobileOpen(true)} className="p-2 bg-slate-100 dark:bg-slate-800 rounded-xl shadow-sm lg:hidden shrink-0">
-            <Menu size={24} className="text-slate-700 dark:text-slate-300" />
+          <button onClick={() => setIsMobileOpen(true)} className="p-2 bg-slate-800 rounded-xl shadow-sm lg:hidden shrink-0">
+            <Menu size={24} className="text-slate-300" />
           </button>
           <div id="page-header-portal" className="flex-1 flex items-center gap-4 min-w-0">
             {/* PageHeader will portal here */}
             {!document.getElementById('page-header-portal')?.hasChildNodes() && appSettings && (
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white truncate uppercase">
+              <h2 className="text-xl font-bold text-white truncate uppercase">
                 {appSettings.siteTitle}
               </h2>
             )}
@@ -86,30 +86,30 @@ export const Header = ({ isDarkMode, setIsDarkMode, setIsMobileOpen, notificatio
         
         <div className="flex items-center gap-3 sm:gap-4 ml-4 shrink-0">
           <button 
-            className="p-2 sm:p-3 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
+            className="p-2 sm:p-3 bg-slate-800 text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
             onClick={onReload}
           >
             <RefreshCw size={20} />
           </button>
           <button 
-            className="p-2 sm:p-3 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
+            className="p-2 sm:p-3 bg-slate-800 text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
             onClick={() => setIsDarkMode(!isDarkMode)}
           >
             {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
           <div className="relative">
             <button 
-              className="p-2 sm:p-3 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all relative" 
+              className="p-2 sm:p-3 bg-slate-800 text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all relative" 
               onClick={toggleNoti}
             >
               <Bell size={20} />
               {unreadCount > 0 && (
-                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-white dark:border-slate-800"></span>
+                <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-primary rounded-full border-2 border-[#0B0F19]"></span>
               )}
             </button>
           </div>
           <button 
-            className="p-2 sm:p-3 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
+            className="p-2 sm:p-3 bg-slate-800 text-slate-300 rounded-full shadow-sm hover:shadow-md transition-all" 
             onClick={onProfileClick}
           >
             <User size={20} />

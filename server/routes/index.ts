@@ -13,6 +13,7 @@ import documentRoutes from "./documentRoutes.js";
 import shiftTaskRoutes from "./shiftTaskRoutes.js";
 import appSettingsRoutes from "./appSettingsRoutes.js";
 import dbRoutes from "./dbRoutes.js";
+import ecommerceRoutes from "./ecommerceRoutes.js";
 
 const router = express.Router();
 
@@ -30,5 +31,6 @@ router.use("/documents", documentRoutes);
 router.use("/shift-tasks", shiftTaskRoutes);
 router.use("/app-settings", appSettingsRoutes);
 router.use("/db", dbRoutes);
+router.use("/ecommerce", ecommerceRoutes);
 
 export default router;
